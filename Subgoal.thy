@@ -7,6 +7,7 @@ theory Subgoal
   imports Kernel
 begin
 
+section \<open>type_synonyms\<close>
 (*todo*)
 (*make be more modular*)
 
@@ -29,25 +30,10 @@ type_synonym pr_state = "subgoal list \<times> deriv_tree"
 definition subgoals_of :: "pr_state \<Rightarrow> subgoal list" where "subgoals_of = fst"
 definition deriv_tree_of :: "pr_state \<Rightarrow> deriv_tree" where "deriv_tree_of = snd"
 
+
+section \<open>proof term constructor\<close>
 definition fresh_var :: "(type \<Rightarrow> name list) \<Rightarrow> name" where
   "fresh_var e = (SOME n. \<forall>T. n \<notin> set (e T))"
-
-
-
-datatype method =
-  Assumption |
-  Rule_Imp_I |
-  Rule_Imp_E "prop"
-(*future work*)
-(*
-creating a new rule from theorem
-type_synonym method = "subgoal \<Rightarrow> subgoal list"
-definition "rule" :: "prop \<Rightarrow> method" where
-definition inf_rule_from :: "method \<Rightarrow> inf_rule" where
-  "inf_rule_from m = (if m = rule_impI then
-    )"
-*)
-
 
 \<comment> \<open>construct proof term from derivation tree\<close>
 \<comment> \<open>pr_term_from accumulator_term type_env_as_type_to_nat_list_fun deriv_tree \<Rightarrow> pr_term\<close>
@@ -83,6 +69,24 @@ fun pr_term_from :: "term option list \<Rightarrow> (type \<Rightarrow> name lis
       t2 # t1 # ts \<Rightarrow> pr_term_from (mk_app t1 t2 # ts) e rs i))"
 *)
 
+
+section \<open>method\<close>
+datatype method =
+  Assumption |
+  Rule_Imp_I |
+  Rule_Imp_E "prop"
+(*future work*)
+(*
+creating a new rule from theorem
+type_synonym method = "subgoal \<Rightarrow> subgoal list"
+definition "rule" :: "prop \<Rightarrow> method" where
+definition inf_rule_from :: "method \<Rightarrow> inf_rule" where
+  "inf_rule_from m = (if m = rule_impI then
+    )"
+*)
+
+
+section \<open>interaction\<close>
 definition "lemma" :: "prop \<Rightarrow> pr_state" where
   "lemma T = ([([], T)], [])"
 definition "apply" :: "pr_state \<Rightarrow> method \<Rightarrow> pr_state" (infixl "apply" 500) where
@@ -99,7 +103,7 @@ definition "done" :: "pr_state \<Rightarrow> prop \<times> term" ("_ done" 400) 
 *)
 
 
-
+section \<open>test\<close>
 (*test*)
 (*printable version*)
 (*
