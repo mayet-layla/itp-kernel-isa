@@ -7,6 +7,9 @@ theory Subgoal
   imports Kernel
 begin
 
+(*todo*)
+(*make be more modular*)
+
 type_synonym "prop" = type
 
 type_synonym "subgoal" = "prop list \<times> prop"
@@ -56,7 +59,7 @@ then this fun can't create the proof term correctly.
 e.g., I can't prove S = \<lambda>x y z. x z (y z): (a \<rightarrow> b \<rightarrow> c) \<rightarrow> (a \<rightarrow> b) \<rightarrow> a \<rightarrow> c,
 while I can prove \<lambda>x y z w. x z (y w): (a \<rightarrow> b \<rightarrow> c) \<rightarrow> (a \<rightarrow> b) \<rightarrow> a \<rightarrow> a \<rightarrow> c.
 \<close>
-fun pr_term_from :: "term list \<Rightarrow> (type \<Rightarrow> name list) \<Rightarrow> deriv_tree \<Rightarrow> term list" where
+fun pr_term_from :: "term option list \<Rightarrow> (type \<Rightarrow> name list) \<Rightarrow> deriv_tree \<Rightarrow> term option list" where
   "pr_term_from ts _ [] = ts" |
   "pr_term_from ts e (r # rs) = (case r of
     Assume T \<Rightarrow> let v = fresh_var e in
@@ -68,7 +71,7 @@ fun pr_term_from :: "term list \<Rightarrow> (type \<Rightarrow> name list) \<Ri
       t2 # t1 # ts \<Rightarrow> pr_term_from (mk_app t1 t2 # ts) e rs))"
 (*printable version*)
 (*
-fun pr_term_from :: "term list \<Rightarrow> (type \<Rightarrow> name list) \<Rightarrow> inf_rule list \<Rightarrow> name \<Rightarrow> term list" where
+fun pr_term_from :: "term option list \<Rightarrow> (type \<Rightarrow> name list) \<Rightarrow> deriv_tree \<Rightarrow> name \<Rightarrow> term option list" where
   "pr_term_from ts _ [] _ = ts" |
   "pr_term_from ts e (r # rs) i = (case r of
     Assume T \<Rightarrow> let v = i in
@@ -88,11 +91,11 @@ definition "apply" :: "pr_state \<Rightarrow> method \<Rightarrow> pr_state" (in
     Rule_Imp_I \<Rightarrow> (case thesis_of sg of Fun T1 T2 \<Rightarrow> ((T1 # assms_of sg, T2) # sgs, Imp_I T1 # deriv_tree_of ps)) |
     Rule_Imp_E P \<Rightarrow> ((assms_of sg, Fun P (thesis_of sg)) # (assms_of sg, P) # sgs, Imp_E # deriv_tree_of ps)))"
 definition "done" :: "pr_state \<Rightarrow> prop \<times> term" ("_ done" 400) where
-  "ps done = (case pr_term_from [] (\<lambda>T. []) (deriv_tree_of ps) of [t] \<Rightarrow> (type_of t, t))"
+  "ps done = (case pr_term_from [] (\<lambda>T. []) (deriv_tree_of ps) of [t] \<Rightarrow> print t)"
 (*printable version*)
 (*
 definition "done" :: "pr_state \<Rightarrow> prop \<times> term" ("_ done" 400) where
-  "ps done = (case pr_term_from [] (\<lambda>T. []) (deriv_tree_of ps) X of [t] \<Rightarrow> (type_of t, t))"
+  "ps done = (case pr_term_from [] (\<lambda>T. []) (deriv_tree_of ps) X of [t] \<Rightarrow> print t)"
 *)
 
 
