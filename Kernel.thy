@@ -165,7 +165,7 @@ imp_i X (''a'':* \<rightarrow>> ''b'':* \<rightarrow>> ''c'':* ) (
 
 
 subsection \<open>7\<close>
-lemma "print (
+lemma example: "print (
 imp_i 0 (''a'':* \<rightarrow>> ''b'':* \<rightarrow>> ''c'':* ) (
   imp_i 1 (''a'':* \<rightarrow>> ''b'':* ) (
     imp_i 2 (''a'':* ) (
