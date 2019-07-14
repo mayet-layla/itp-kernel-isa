@@ -23,7 +23,8 @@ type_synonym name = "nat"
 
 text \<open>
 If you want to print terms,
-please use following definitions instead.
+please use following definitions instead
+and do so for other functions similarly.
 \<close>
 (*printable version*)
 (*
@@ -264,5 +265,11 @@ next
     apply (auto simp add: Let_def)
     done
 qed
+
+
+hide_type (open) "term"
+hide_const (open) mk_var
+hide_const (open) mk_abs
+hide_const (open) mk_app
 
 end
