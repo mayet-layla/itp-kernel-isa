@@ -178,8 +178,8 @@ imp_i 0 (''a'':* \<rightarrow>> ''b'':* \<rightarrow>> ''c'':* ) (
           (assume 2 (''a'':* )))
 ))))
 =
-((''a'':* \<rightarrow>> ''b'':* \<rightarrow>> ''c'':*) \<rightarrow>> (''a'':* \<rightarrow>> ''b'':*) \<rightarrow>> ''a'':* \<rightarrow>> ''c'':*,
-\<lambda>0::(''a'':* \<rightarrow>> ''b'':* \<rightarrow>> ''c'':*). \<lambda>1::(''a'':* \<rightarrow>> ''b'':*). \<lambda>2::''a'':*. |[ |[0::''a'':* \<rightarrow>> ''b'':* \<rightarrow>> ''c'':* 2::''a'':*]| |[1::''a'':* \<rightarrow>> ''b'':* 2::''a'':*]| ]|>>>)"
+((''a'':* \<rightarrow>> ''b'':* \<rightarrow>> ''c'':* ) \<rightarrow>> (''a'':* \<rightarrow>> ''b'':* ) \<rightarrow>> ''a'':* \<rightarrow>> ''c'':*,
+\<lambda>0::(''a'':* \<rightarrow>> ''b'':* \<rightarrow>> ''c'':* ). \<lambda>1::(''a'':* \<rightarrow>> ''b'':* ). \<lambda>2::''a'':*. |[ |[0::''a'':* \<rightarrow>> ''b'':* \<rightarrow>> ''c'':* 2::''a'':*]| |[1::''a'':* \<rightarrow>> ''b'':* 2::''a'':*]| ]|>>>)"
   by (simp add: print_def rule_def mk_def)
 
 
