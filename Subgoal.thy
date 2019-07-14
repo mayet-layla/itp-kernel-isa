@@ -1,7 +1,7 @@
-(*
-there is a bug.
-in detail, see the comment of pr_term_from.
-*)
+text \<open>
+There is a bug.
+In detail, see the comment of fun pr_term_from.
+\<close>
 
 theory Subgoal
   imports Kernel
@@ -18,7 +18,8 @@ datatype inf_rule =
   Imp_I type |
   Imp_E
 
-(*derivation tree as inference rule list.*)
+\<comment> \<open>derivation tree as inf_rule list\<close>
+(*fixme*)
 type_synonym deriv_tree = "inf_rule list"
 
 type_synonym pr_state = "subgoal list \<times> deriv_tree"
@@ -34,9 +35,9 @@ datatype method =
   Assumption |
   Rule_Imp_I |
   Rule_Imp_E "prop"
+(*future work*)
 (*
-future work
-creating a new rule from theorem.
+creating a new rule from theorem
 type_synonym method = "subgoal \<Rightarrow> subgoal list"
 definition "rule" :: "prop \<Rightarrow> method" where
 definition inf_rule_from :: "method \<Rightarrow> inf_rule" where
@@ -44,17 +45,18 @@ definition inf_rule_from :: "method \<Rightarrow> inf_rule" where
     )"
 *)
 
-(*
-inf_rule to proof term
-pr_term_from acc_term type_env_as_type_to_nat_list_fun inf_rules \<Rightarrow> pr_term
-fixme
-there is a bug.
-if a variable occurs some times,
+
+\<comment> \<open>construct proof term from derivation tree\<close>
+\<comment> \<open>pr_term_from accumulator_term type_env_as_type_to_nat_list_fun deriv_tree \<Rightarrow> pr_term\<close>
+(*fixme*)
+text \<open>
+There is a bug.
+If a variable occurs some times,
 then this fun can't create the proof term correctly.
-e.g., i can't prove S = \<lambda>x y z. x z (y z): (a \<rightarrow> b \<rightarrow> c) \<rightarrow> (a \<rightarrow> b) \<rightarrow> a \<rightarrow> c,
-while i can prove \<lambda>x y z w. x z (y w): (a \<rightarrow> b \<rightarrow> c) \<rightarrow> (a \<rightarrow> b) \<rightarrow> a \<rightarrow> a \<rightarrow> c.
-*)
-fun pr_term_from :: "term list \<Rightarrow> (type \<Rightarrow> name list) \<Rightarrow> inf_rule list \<Rightarrow> term list" where
+e.g., I can't prove S = \<lambda>x y z. x z (y z): (a \<rightarrow> b \<rightarrow> c) \<rightarrow> (a \<rightarrow> b) \<rightarrow> a \<rightarrow> c,
+while I can prove \<lambda>x y z w. x z (y w): (a \<rightarrow> b \<rightarrow> c) \<rightarrow> (a \<rightarrow> b) \<rightarrow> a \<rightarrow> a \<rightarrow> c.
+\<close>
+fun pr_term_from :: "term list \<Rightarrow> (type \<Rightarrow> name list) \<Rightarrow> deriv_tree \<Rightarrow> term list" where
   "pr_term_from ts _ [] = ts" |
   "pr_term_from ts e (r # rs) = (case r of
     Assume T \<Rightarrow> let v = fresh_var e in
@@ -96,31 +98,37 @@ definition "done" :: "pr_state \<Rightarrow> prop \<times> term" ("_ done" 400) 
 
 
 (*test*)
+(*printable version*)
+(*
 value "
-lemma (''a'':* \<rightarrow>> ''a'':*)
+lemma (''a'':* \<rightarrow>> ''a'':* )
   apply Rule_Imp_I
   apply Assumption
+  done
 "
 value "
-lemma ((''a'':* \<rightarrow>> ''b'':* \<rightarrow>> ''c'':*) \<rightarrow>> (''a'':* \<rightarrow>> ''b'':*) \<rightarrow>> ''a'':* \<rightarrow>> ''c'':*)
+lemma ((''a'':* \<rightarrow>> ''b'':* \<rightarrow>> ''c'':* ) \<rightarrow>> (''a'':* \<rightarrow>> ''b'':* ) \<rightarrow>> ''a'':* \<rightarrow>> ''c'':* )
   apply Rule_Imp_I
   apply Rule_Imp_I
   apply Rule_Imp_I
-  apply (Rule_Imp_E (''b'':*))
-  apply (Rule_Imp_E (''a'':*))
+  apply (Rule_Imp_E (''b'':* ))
+  apply (Rule_Imp_E (''a'':* ))
   apply Assumption
   apply Assumption
-  apply (Rule_Imp_E (''a'':*))
+  apply (Rule_Imp_E (''a'':* ))
   apply Assumption
   apply Assumption
+  done
 "
-
+*)
 
 
 (*future work*)
+(*
 theorem soundness: "\<exists>ms. ((foldl (apply) (lemma l) ms) done) = (T, t) \<Longrightarrow> l = T \<and> T = type_of t \<and> well_typed t"
   sorry
 (*inductive provable*)
 theorem completeness: "True" ..
+*)
 
 end
