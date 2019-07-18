@@ -45,16 +45,16 @@ then this fun can't create the proof term correctly.
 e.g., I can't prove S = \<lambda>x y z. x z (y z): (a \<rightarrow> b \<rightarrow> c) \<rightarrow> (a \<rightarrow> b) \<rightarrow> a \<rightarrow> c,
 while I can prove \<lambda>x y z w. x z (y w): (a \<rightarrow> b \<rightarrow> c) \<rightarrow> (a \<rightarrow> b) \<rightarrow> a \<rightarrow> a \<rightarrow> c.
 \<close>
-fun pr_term_from :: "term option list \<Rightarrow> (type \<Rightarrow> name list) \<Rightarrow> deriv_tree \<Rightarrow> term option list" where
+fun pr_term_from :: "Kernel.term option list \<Rightarrow> (type \<Rightarrow> name list) \<Rightarrow> deriv_tree \<Rightarrow> Kernel.term option list" where
   "pr_term_from ts _ [] = ts" |
   "pr_term_from ts e (r # rs) = (case r of
     Assume T \<Rightarrow> let v = fresh_var e in
-      pr_term_from (mk_var v T # ts) (e(T := v # e T)) rs |
+      pr_term_from (assume v T # ts) (e(T := v # e T)) rs |
     Imp_I T \<Rightarrow> (case e T of
-      [] \<Rightarrow> pr_term_from (mk_abs (fresh_var e) T (hd ts) # tl ts) e rs |
-      n # ns \<Rightarrow> pr_term_from (mk_abs n T (hd ts) # tl ts) (e(T := ns)) rs) |
+      [] \<Rightarrow> pr_term_from (imp_i (fresh_var e) T (hd ts) # tl ts) e rs |
+      n # ns \<Rightarrow> pr_term_from (imp_i n T (hd ts) # tl ts) (e(T := ns)) rs) |
     Imp_E \<Rightarrow> (case ts of
-      t2 # t1 # ts \<Rightarrow> pr_term_from (mk_app t1 t2 # ts) e rs))"
+      t2 # t1 # ts \<Rightarrow> pr_term_from (imp_e t1 t2 # ts) e rs))"
 (*printable version*)
 (*
 fun pr_term_from :: "term option list \<Rightarrow> (type \<Rightarrow> name list) \<Rightarrow> deriv_tree \<Rightarrow> name \<Rightarrow> term option list" where
@@ -94,7 +94,7 @@ definition "apply" :: "pr_state \<Rightarrow> method \<Rightarrow> pr_state" (in
     Assumption \<Rightarrow> if thesis_of sg \<in> set (assms_of sg) then (sgs, (Assume (thesis_of sg)) # deriv_tree_of ps) else undefined |
     Rule_Imp_I \<Rightarrow> (case thesis_of sg of Fun T1 T2 \<Rightarrow> ((T1 # assms_of sg, T2) # sgs, Imp_I T1 # deriv_tree_of ps)) |
     Rule_Imp_E P \<Rightarrow> ((assms_of sg, Fun P (thesis_of sg)) # (assms_of sg, P) # sgs, Imp_E # deriv_tree_of ps)))"
-definition "done" :: "pr_state \<Rightarrow> prop \<times> term" ("_ done" 400) where
+definition "done" :: "pr_state \<Rightarrow> prop \<times> Kernel.term" ("_ done" 400) where
   "ps done = (case pr_term_from [] (\<lambda>T. []) (deriv_tree_of ps) of [t] \<Rightarrow> print t)"
 (*printable version*)
 (*
